@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Edit Employee — {{ employee.employee_id }}{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4">
+    <a href="{{ url_for('employees.view', emp_id=employee.id) }}" class="btn btn-outline-secondary me-3">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="fas fa-edit me-2 text-warning"></i>Edit Employee — {{ employee.employee_id }}</h2>
+</div>
+
+<div class="card border-0 shadow-sm" style="max-width:800px">
+    <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('employees.edit', emp_id=employee.id) }}" id="edit-employee-form">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Employee ID</label>
+                    <input type="text" class="form-control bg-light" value="{{ employee.employee_id }}" disabled>
+                    <div class="form-text">Employee ID cannot be changed.</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Employee Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="name" id="emp_name"
+                           value="{{ form_data.get('name', employee.name) }}" maxlength="50">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Department <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="department" id="department"
+                           value="{{ form_data.get('department', employee.department) }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Designation <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="designation" id="designation"
+                           value="{{ form_data.get('designation', employee.designation) }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" name="email" id="email"
+                           value="{{ form_data.get('email', employee.email) }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Phone <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="phone" id="phone"
+                           value="{{ form_data.get('phone', employee.phone) }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Date of Joining <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" name="date_of_joining" id="date_of_joining"
+                           value="{{ form_data.get('date_of_joining', employee.date_of_joining) }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Basic Salary (₹) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" name="basic_salary" id="basic_salary"
+                           value="{{ form_data.get('basic_salary', employee.basic_salary) }}" min="0">
+                    <div class="form-text">Valid range: ₹10,000 – ₹5,00,000</div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-warning me-2" id="submit-edit-emp">
+                        <i class="fas fa-save me-1"></i>Update Employee
+                    </button>
+                    <a href="{{ url_for('employees.view', emp_id=employee.id) }}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

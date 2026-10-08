@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Salary Preview — {{ employee.employee_id }}{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4">
+    <a href="{{ url_for('salary.index') }}" class="btn btn-outline-secondary me-3">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="fas fa-calculator me-2 text-info"></i>Salary Preview — {{ employee.employee_id }}</h2>
+</div>
+<div class="alert alert-warning">
+    <i class="fas fa-info-circle me-1"></i>
+    <strong>Academic Demo Only:</strong> These are simplified payroll calculation rules for demonstration purposes and do not represent statutory payroll compliance.
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white fw-semibold">Earnings</div>
+            <div class="card-body">
+                <table class="table table-sm" id="earnings-table">
+                    <tr><td>Basic Salary</td><td class="text-end fw-bold">₹ {{ "%.2f"|format(preview.basic) }}</td></tr>
+                    <tr><td>HRA (20% of Basic)</td><td class="text-end">₹ {{ "%.2f"|format(preview.hra) }}</td></tr>
+                    <tr><td>DA (10% of Basic)</td><td class="text-end">₹ {{ "%.2f"|format(preview.da) }}</td></tr>
+                    <tr><td>Conveyance Allowance</td><td class="text-end">₹ {{ "%.2f"|format(preview.conveyance) }}</td></tr>
+                    <tr><td>Other Allowance</td><td class="text-end">₹ {{ "%.2f"|format(preview.other_allowance) }}</td></tr>
+                    <tr class="table-success fw-bold"><td>Gross Salary</td><td class="text-end">₹ {{ "%.2f"|format(preview.gross) }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-danger text-white fw-semibold">Deductions</div>
+            <div class="card-body">
+                <table class="table table-sm" id="deductions-table">
+                    <tr><td>PF (12% of Basic)</td><td class="text-end">₹ {{ "%.2f"|format(preview.pf) }}</td></tr>
+                    <tr><td>Professional Tax</td><td class="text-end">₹ {{ "%.2f"|format(preview.prof_tax) }}</td></tr>
+                    <tr><td>Income Tax</td><td class="text-end">₹ {{ "%.2f"|format(preview.inc_tax) }}</td></tr>
+                    <tr><td>Other Deductions</td><td class="text-end">₹ {{ "%.2f"|format(preview.other_deductions) }}</td></tr>
+                    <tr class="table-danger fw-bold"><td>Total Deductions</td><td class="text-end">₹ {{ "%.2f"|format(preview.total_ded) }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card border-0 shadow-sm bg-primary text-white">
+            <div class="card-body text-center py-3">
+                <h4 class="mb-0">Net Salary: <strong>₹ {{ "%.2f"|format(preview.net) }}</strong></h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('salary.edit', sc_id=sc.id) }}" class="btn btn-warning me-2" id="btn-edit-sal">
+        <i class="fas fa-edit me-1"></i>Edit Components
+    </a>
+    <a href="{{ url_for('salary.index') }}" class="btn btn-outline-secondary">Back to List</a>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Attendance{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-calendar-check me-2 text-success"></i>Attendance Records</h2>
+    <a href="{{ url_for('attendance.add') }}" class="btn btn-success" id="btn-add-att">
+        <i class="fas fa-plus me-1"></i>Record Attendance
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0" id="attendance-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Employee</th><th>Month/Year</th><th>Working Days</th>
+                    <th>Present</th><th>Leave</th><th>Overtime (hrs)</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for att, emp in attendances %}
+                <tr>
+                    <td><strong>{{ emp.employee_id }}</strong> — {{ emp.name }}</td>
+                    <td>
+                        {% for num, name in months %}{% if num == att.month %}{{ name }}{% endif %}{% endfor %}
+                        {{ att.year }}
+                    </td>
+                    <td>{{ att.working_days }}</td>
+                    <td>{{ att.present_days }}</td>
+                    <td>{{ att.leave_days }}</td>
+                    <td>{{ att.overtime_hours }}</td>
+                    <td>
+                        <a href="{{ url_for('attendance.edit', att_id=att.id) }}" class="btn btn-sm btn-outline-warning" id="edit-att-{{ att.id }}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="text-center text-muted py-4">No attendance records found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

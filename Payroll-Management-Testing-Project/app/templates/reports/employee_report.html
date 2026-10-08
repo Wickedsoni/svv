@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Employee Report{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4">
+    <a href="{{ url_for('reports.index') }}" class="btn btn-outline-secondary me-3">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="fas fa-users me-2 text-primary"></i>Employee Report</h2>
+</div>
+
+<!-- Filters -->
+<form method="GET" class="row g-2 mb-4">
+    <div class="col-auto">
+        <select class="form-select" name="status" id="filter-status">
+            <option value="" {{ 'selected' if not status_filter }}>All Status</option>
+            <option value="Active" {{ 'selected' if status_filter == 'Active' }}>Active</option>
+            <option value="Inactive" {{ 'selected' if status_filter == 'Inactive' }}>Inactive</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <input type="text" class="form-control" name="department" id="filter-dept"
+               placeholder="Department..." value="{{ dept_filter }}">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary" id="filter-btn">
+            <i class="fas fa-filter me-1"></i>Filter
+        </button>
+        <a href="{{ url_for('reports.employee_report') }}" class="btn btn-outline-secondary ms-1">Clear</a>
+    </div>
+</form>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0" id="emp-report-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Emp ID</th><th>Name</th><th>Department</th>
+                    <th>Designation</th><th>Basic Salary</th><th>Joining Date</th><th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr>
+                    <td><strong>{{ emp.employee_id }}</strong></td>
+                    <td>{{ emp.name }}</td>
+                    <td>{{ emp.department }}</td>
+                    <td>{{ emp.designation }}</td>
+                    <td>₹ {{ "%.2f"|format(emp.basic_salary) }}</td>
+                    <td>{{ emp.date_of_joining }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if emp.status == 'Active' else 'secondary' }}">
+                            {{ emp.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="text-center text-muted py-4">No employees match the filter.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<small class="text-muted mt-2 d-block">Total: {{ employees|length }} employee(s)</small>
+{% endblock %}

@@ -1,0 +1,58 @@
+/* Payroll Management System — Team 11 Demo */
+
+body {
+    background-color: #f0f2f5;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+#sidebar-wrapper {
+    min-width: 220px;
+    max-width: 220px;
+    min-height: 100vh;
+}
+
+#wrapper {
+    min-height: 100vh;
+}
+
+#page-content-wrapper {
+    min-height: 100vh;
+}
+
+.sidebar-heading {
+    font-size: 1.1rem;
+}
+
+.list-group-item.active {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+}
+
+.list-group-item:hover {
+    background-color: #1a1d20 !important;
+    color: #fff !important;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.table th {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+@media print {
+    #sidebar-wrapper, nav.navbar, .no-print {
+        display: none !important;
+    }
+    #page-content-wrapper {
+        margin-left: 0 !important;
+    }
+}

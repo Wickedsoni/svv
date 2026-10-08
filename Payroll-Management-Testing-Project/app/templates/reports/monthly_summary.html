@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Monthly Payroll Summary{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4">
+    <a href="{{ url_for('reports.index') }}" class="btn btn-outline-secondary me-3">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="fas fa-chart-line me-2 text-info"></i>Monthly Payroll Summary</h2>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0" id="monthly-summary-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Month</th><th>Year</th><th>Employees</th>
+                    <th>Total Gross</th><th>Total Net</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in results %}
+                <tr>
+                    <td>{{ month_names[r.month] }}</td>
+                    <td>{{ r.year }}</td>
+                    <td>{{ r.count }}</td>
+                    <td>₹ {{ "%.2f"|format(r.total_gross) }}</td>
+                    <td class="fw-bold text-success">₹ {{ "%.2f"|format(r.total_net) }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" class="text-center text-muted py-4">No payroll data available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

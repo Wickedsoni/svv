@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Salary Components{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-sliders-h me-2 text-info"></i>Salary Components</h2>
+<p class="text-muted">
+    <em>Note: HRA, DA, PF, Professional Tax and Income Tax are auto-calculated. Only Other Allowance/Deductions are editable here.</em>
+</p>
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0" id="salary-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Employee</th><th>Department</th><th>Basic Salary</th>
+                    <th>Other Allowance</th><th>Other Deductions</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sc, emp in components %}
+                <tr>
+                    <td><strong>{{ emp.employee_id }}</strong> — {{ emp.name }}</td>
+                    <td>{{ emp.department }}</td>
+                    <td>₹ {{ "%.2f"|format(emp.basic_salary) }}</td>
+                    <td>₹ {{ "%.2f"|format(sc.other_allowance) }}</td>
+                    <td>₹ {{ "%.2f"|format(sc.other_deductions) }}</td>
+                    <td>
+                        <a href="{{ url_for('salary.view', sc_id=sc.id) }}" class="btn btn-sm btn-outline-info me-1" id="view-sal-{{ emp.employee_id }}">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ url_for('salary.edit', sc_id=sc.id) }}" class="btn btn-sm btn-outline-warning" id="edit-sal-{{ emp.employee_id }}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-center text-muted py-4">No salary components found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

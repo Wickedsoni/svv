@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Generate Payroll{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4">
+    <a href="{{ url_for('payroll.index') }}" class="btn btn-outline-secondary me-3">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="fas fa-cogs me-2 text-primary"></i>Generate Payroll</h2>
+</div>
+
+<div class="card border-0 shadow-sm" style="max-width:600px">
+    <div class="card-body p-4">
+        <p class="text-muted">Select an active employee and period. All preconditions (attendance, salary) must be met.</p>
+        <form method="POST" action="{{ url_for('payroll.generate') }}" id="generate-payroll-form">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Employee <span class="text-danger">*</span></label>
+                    <select class="form-select" name="employee_id" id="payroll_employee_id">
+                        <option value="">— Select Active Employee —</option>
+                        {% for emp in employees %}
+                        <option value="{{ emp.id }}" {{ 'selected' if form_data.get('employee_id', '') == emp.id|string }}>
+                            {{ emp.employee_id }} — {{ emp.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Month <span class="text-danger">*</span></label>
+                    <select class="form-select" name="month" id="payroll_month">
+                        <option value="">— Select Month —</option>
+                        {% for num, name in months %}
+                        <option value="{{ num }}" {{ 'selected' if form_data.get('month', '') == num|string }}>
+                            {{ name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Year <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" name="year" id="payroll_year"
+                           placeholder="e.g. 2026" min="2020" max="2030"
+                           value="{{ form_data.get('year', '2026') }}">
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submit-generate">
+                        <i class="fas fa-cogs me-1"></i>Generate Payroll
+                    </button>
+                    <a href="{{ url_for('payroll.index') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

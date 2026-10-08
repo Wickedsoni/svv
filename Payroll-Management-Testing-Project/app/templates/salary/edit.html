@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Edit Salary Components — {{ employee.employee_id }}{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4">
+    <a href="{{ url_for('salary.index') }}" class="btn btn-outline-secondary me-3">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="fas fa-edit me-2 text-warning"></i>Edit Salary Components — {{ employee.employee_id }}</h2>
+</div>
+
+<div class="card border-0 shadow-sm" style="max-width:600px">
+    <div class="card-body p-4">
+        <p class="text-muted">HRA, DA, PF, Professional Tax, and Income Tax are auto-calculated from Basic Salary.</p>
+        <form method="POST" action="{{ url_for('salary.edit', sc_id=sc.id) }}" id="edit-salary-form">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Other Allowance (₹)</label>
+                    <input type="number" class="form-control" name="other_allowance" id="other_allowance"
+                           value="{{ sc.other_allowance }}" min="0" step="0.01">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Other Deductions (₹)</label>
+                    <input type="number" class="form-control" name="other_deductions" id="other_deductions"
+                           value="{{ sc.other_deductions }}" min="0" step="0.01">
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-warning me-2" id="submit-edit-sal">
+                        <i class="fas fa-save me-1"></i>Update Components
+                    </button>
+                    <a href="{{ url_for('salary.view', sc_id=sc.id) }}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

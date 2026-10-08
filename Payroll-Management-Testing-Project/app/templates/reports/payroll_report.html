@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Payroll Report{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4">
+    <a href="{{ url_for('reports.index') }}" class="btn btn-outline-secondary me-3">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="fas fa-file-invoice-dollar me-2 text-success"></i>Payroll Report</h2>
+</div>
+
+<form method="GET" class="row g-2 mb-4">
+    <div class="col-auto">
+        <select class="form-select" name="month" id="filter-month">
+            <option value="">All Months</option>
+            {% for num, name in month_names.items() %}
+            <option value="{{ num }}" {{ 'selected' if month_filter == num|string }}>{{ name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <input type="number" class="form-control" name="year" id="filter-year"
+               placeholder="Year" min="2020" max="2030" value="{{ year_filter }}" style="width:100px">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-success" id="filter-pay-btn">
+            <i class="fas fa-filter me-1"></i>Filter
+        </button>
+        <a href="{{ url_for('reports.payroll_report') }}" class="btn btn-outline-secondary ms-1">Clear</a>
+    </div>
+</form>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0" id="payroll-report-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Employee</th><th>Period</th><th>Gross</th>
+                    <th>Deductions</th><th>Net Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payroll, emp in payrolls %}
+                <tr>
+                    <td><strong>{{ emp.employee_id }}</strong> — {{ emp.name }}</td>
+                    <td>{{ month_names[payroll.month] }} {{ payroll.year }}</td>
+                    <td>₹ {{ "%.2f"|format(payroll.gross_salary) }}</td>
+                    <td>₹ {{ "%.2f"|format(payroll.total_deductions) }}</td>
+                    <td class="fw-bold text-success">₹ {{ "%.2f"|format(payroll.net_salary) }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" class="text-center text-muted py-4">No payroll records found.</td></tr>
+                {% endfor %}
+            </tbody>
+            {% if payrolls %}
+            <tfoot class="table-secondary fw-bold">
+                <tr>
+                    <td colspan="2">TOTALS ({{ payrolls|length }} records)</td>
+                    <td>₹ {{ "%.2f"|format(total_gross) }}</td>
+                    <td>₹ {{ "%.2f"|format(total_deductions) }}</td>
+                    <td class="text-success">₹ {{ "%.2f"|format(total_net) }}</td>
+                </tr>
+            </tfoot>
+            {% endif %}
+        </table>
+    </div>
+</div>
+{% endblock %}

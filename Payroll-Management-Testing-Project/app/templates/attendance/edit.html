@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Edit Attendance{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4">
+    <a href="{{ url_for('attendance.index') }}" class="btn btn-outline-secondary me-3">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <h2 class="mb-0"><i class="fas fa-edit me-2 text-warning"></i>Edit Attendance</h2>
+</div>
+
+<div class="card border-0 shadow-sm" style="max-width:700px">
+    <div class="card-body p-4">
+        <div class="alert alert-info">
+            <strong>Employee:</strong> {{ attendance.employee.employee_id }} — {{ attendance.employee.name }}<br>
+            <strong>Period:</strong> {{ attendance.month }}/{{ attendance.year }}
+        </div>
+        <form method="POST" action="{{ url_for('attendance.edit', att_id=attendance.id) }}" id="edit-attendance-form">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Working Days</label>
+                    <input type="number" class="form-control" name="working_days" id="working_days"
+                           value="{{ attendance.working_days }}" min="1" max="31">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Present Days</label>
+                    <input type="number" class="form-control" name="present_days" id="present_days"
+                           value="{{ attendance.present_days }}" min="0">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Leave Days</label>
+                    <input type="number" class="form-control" name="leave_days" id="leave_days"
+                           value="{{ attendance.leave_days }}" min="0">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Overtime Hours</label>
+                    <input type="number" class="form-control" name="overtime_hours" id="overtime_hours"
+                           value="{{ attendance.overtime_hours }}" min="0" max="100" step="0.5">
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-warning me-2" id="submit-edit-att">
+                        <i class="fas fa-save me-1"></i>Update Attendance
+                    </button>
+                    <a href="{{ url_for('attendance.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
