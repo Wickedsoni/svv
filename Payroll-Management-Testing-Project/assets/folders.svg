@@ -1,0 +1,72 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes march { to { stroke-dashoffset: -30; } }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0px); }
+    }
+    .box { fill: #2c3e50; rx: 12; ry: 12; filter: drop-shadow(0 6px 6px rgba(0,0,0,0.15)); }
+    .box-root { fill: #e74c3c; }
+    .box-wb { fill: #2980b9; }
+    .box-it { fill: #27ae60; }
+    .box-folder { fill: #f39c12; }
+    .title { fill: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 16px; font-weight: 700; text-anchor: middle; }
+    .line { stroke: #bdc3c7; stroke-width: 3px; fill: none; stroke-dasharray: 8, 8; animation: march 1.5s linear infinite; }
+  </style>
+  
+  <rect width="100%" height="100%" fill="#f4f7f6" rx="20" ry="20" />
+
+  <!-- Paths -->
+  <path d="M 400 90 L 200 160" class="line" />
+  <path d="M 400 90 L 400 160" class="line" />
+  <path d="M 400 90 L 600 160" class="line" />
+  
+  <path d="M 200 210 L 120 280" class="line" />
+  <path d="M 200 210 L 250 280" class="line" />
+  
+  <path d="M 400 210 L 400 280" class="line" />
+  <path d="M 600 210 L 600 280" class="line" />
+
+  <!-- Root -->
+  <g transform="translate(320, 30)" style="animation: float 4s ease-in-out infinite;">
+    <rect width="160" height="60" class="box box-root" />
+    <text x="80" y="36" class="title">🚀 Software Testing</text>
+  </g>
+
+  <!-- Black Box -->
+  <g transform="translate(120, 160)">
+    <rect width="160" height="50" class="box" />
+    <text x="80" y="31" class="title">⬛ Black Box</text>
+  </g>
+
+  <!-- White Box -->
+  <g transform="translate(320, 160)">
+    <rect width="160" height="50" class="box box-wb" />
+    <text x="80" y="31" class="title">🩻 White Box</text>
+  </g>
+
+  <!-- Integration -->
+  <g transform="translate(520, 160)">
+    <rect width="160" height="50" class="box box-it" />
+    <text x="80" y="31" class="title">🔗 Integration</text>
+  </g>
+
+  <!-- Folders -->
+  <g transform="translate(20, 280)">
+    <rect width="180" height="40" class="box box-folder" />
+    <text x="90" y="26" class="title" style="font-size:14px;">📂 evidence/black_box</text>
+  </g>
+  <g transform="translate(160, 340)">
+    <rect width="220" height="40" class="box box-folder" />
+    <text x="110" y="26" class="title" style="font-size:14px;">📂 evidence/initial_failures</text>
+  </g>
+  <g transform="translate(320, 280)">
+    <rect width="160" height="40" class="box box-folder" />
+    <text x="80" y="26" class="title" style="font-size:14px;">📂 evidence/white_box</text>
+  </g>
+  <g transform="translate(520, 280)">
+    <rect width="180" height="40" class="box box-folder" />
+    <text x="90" y="26" class="title" style="font-size:14px;">📂 evidence/integration</text>
+  </g>
+</svg>

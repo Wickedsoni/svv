@@ -23,30 +23,9 @@ This repository is an exhaustive demonstration of the Software Testing Lifecycle
 
 The System Under Test (SUT) is built using a modern, lightweight web architecture. Below is the interactive flow of how our layers communicate:
 
-```mermaid
-graph TD
-    %% Architecture Nodes
-    subgraph Frontend ["🎨 View Layer: Glassmorphism UI"]
-        UI("HTML5 / CSS3 / Jinja2")
-    end
-    
-    subgraph Backend ["🧠 Controller & Service Layer: Flask"]
-        API("Web Routes")
-        SVC("Payroll Logic Services")
-    end
-    
-    subgraph Database ["💾 Data Layer: SQLite"]
-        DB[("Relational DB")]
-    end
-
-    %% Flow connections
-    UI -->|"HTTP GET/POST"| API
-    API -->|"Orchestrates"| SVC
-    SVC -->|"SQLAlchemy ORM Queries"| DB
-    DB -->|"Returns Result Set"| SVC
-    SVC -->|"Processes Logic & Tax"| API
-    API -->|"Renders State"| UI
-```
+<div align="center">
+  <img src="assets/architecture.svg" alt="Animated Architecture Diagram" width="800">
+</div>
 
 ---
 
@@ -54,41 +33,9 @@ graph TD
 
 We separated our testing artifacts into highly organized directories. Below is the interactive map showing which folders correspond to which testing techniques:
 
-```mermaid
-graph LR
-    Root(("🚀 Software Testing")) --> BB{"⬛ Black Box"}
-    Root --> WB{"🩻 White Box"}
-    Root --> IT{"🔗 Integration"}
-
-    %% Black Box Branch
-    BB --> BB1["BVA & ECP"]
-    BB --> BB2["Cause-Effect & Decision Table"]
-    BB1 -.-> |"Screenshots"| F1("📂 evidence/black_box")
-    BB2 -.-> |"Defect Captures"| F2("📂 evidence/initial_failures")
-
-    %% White Box Branch
-    WB --> WB1["Statement Coverage"]
-    WB --> WB2["Branch Coverage"]
-    WB1 -.-> |"Pytest HTML"| F3("📂 evidence/white_box")
-    WB2 -.-> F3
-
-    %% Integration Branch
-    IT --> IT1["End-to-End Flow"]
-    IT --> IT2["DB Cascades"]
-    IT1 -.-> |"Pytest-HTML Reports"| F4("📂 evidence/integration")
-    IT2 -.-> F4
-
-    %% Styles for attractiveness
-    style Root fill:#ff9a9e,stroke:#fff,stroke-width:2px,color:#fff
-    style BB fill:#2c3e50,stroke:#fff,stroke-width:2px,color:#fff
-    style WB fill:#bdc3c7,stroke:#fff,stroke-width:2px,color:#2c3e50
-    style IT fill:#16a085,stroke:#fff,stroke-width:2px,color:#fff
-    
-    style F1 fill:#f39c12,stroke:#fff,stroke-width:1px,color:#fff
-    style F2 fill:#e74c3c,stroke:#fff,stroke-width:1px,color:#fff
-    style F3 fill:#2980b9,stroke:#fff,stroke-width:1px,color:#fff
-    style F4 fill:#27ae60,stroke:#fff,stroke-width:1px,color:#fff
-```
+<div align="center">
+  <img src="assets/folders.svg" alt="Animated Testing Diagram" width="800">
+</div>
 
 ---
 
@@ -111,23 +58,71 @@ graph LR
 
 ---
 
-## 📋 4. Test Cases & Defect Summary (The "A to Z")
+## 📋 4. Test Cases & Defect Resolution (The "A to Z")
 
 We executed **73 total Test Cases** during our cycle. We intentionally seeded the app with defects, captured them in `evidence/initial_failures`, fixed them, and re-tested them.
+
+### Comprehensive Test Case Matrix
 
 <div align="center">
 
 | Test ID | Module | Technique | Test Scenario | Status | Defect Found |
 |:-------:|:-------|:----------|:--------------|:------:|:-------------|
 | **TC-001** | Authentication | Positive | Login with valid credentials | ✅ Pass | - |
-| **TC-012** | Employee | BVA | Basic Salary = ₹500,000 | ❌ Fail | **BUG-001** (Accepted invalid boundary) |
+| **TC-002** | Authentication | BVA (Empty) | Login with empty fields | ✅ Pass | - |
+| **TC-010** | Employee | ECP (Valid) | Add employee with valid inputs | ❌ Fail | **BUG-011** (Flash Message Color) |
+| **TC-011** | Employee | BVA (Min Limit) | Basic Salary = ₹10,000 | ✅ Pass | - |
+| **TC-012** | Employee | BVA (Max Limit) | Basic Salary = ₹500,000 | ❌ Fail | **BUG-001** (Accepted invalid boundary) |
+| **TC-020** | Attendance | BVA | Present Days = Working Days | ✅ Pass | - |
 | **TC-021** | Attendance | Cause-Effect | Present Days > Working Days | ❌ Fail | **BUG-002** (Bypassed logic) |
 | **TC-030** | Payroll | Decision Table | Calculate Gross Salary | ❌ Fail | **BUG-003** (Conveyance omitted) |
 | **TC-031** | Payroll | Decision Table | Tax Calc for Salary > 30k | ❌ Fail | **BUG-005** (Calculated at 10% not 20%) |
+| **TC-032** | Payroll | Decision Table | Calculate Professional Tax | ❌ Fail | **BUG-008** (Always returned 0) |
 | **TC-034** | Payroll | State Transition | Generate Payroll same month, diff year | ❌ Fail | **BUG-004** (Falsely flagged duplicate) |
 | **TC-040** | Dashboard | UI/UX | Verify Analytics Panel Title | ❌ Fail | **BUG-010** (Typo injected) |
 
 </div>
+
+### 🛠️ How We Resolved The Defects
+
+During our defect lifecycle, we fixed all identified bugs. Here is exactly how we resolved some of the major logical failures:
+
+#### 1. BUG-001: Boundary Value Analysis Failure
+- **The Bug**: The system incorrectly allowed a Basic Salary of exactly ₹500,000, violating the rule that it must be strictly less than 500,000.
+- **The Fix**: We updated the comparison operator in the validation route from `>=` to `>`.
+  ```python
+  # Before
+  if basic_salary >= 500000:
+  
+  # After
+  if basic_salary > 500000:
+  ```
+
+#### 2. BUG-002: Cause-Effect Validation Bypass
+- **The Bug**: The system bypassed the critical validation check (`Present Days > Working Days`) if the user inputted `0` for `Leave Days`.
+- **The Fix**: We decoupled the validation so it runs regardless of the leave days input.
+  ```python
+  # Before
+  if leave_days == 0 and present_days > working_days:
+      pass # Intentionally flawed bypass
+  
+  # After
+  if present_days > working_days:
+      raise ValueError("Present days cannot exceed working days.")
+  ```
+
+#### 3. BUG-005: Decision Table Tax Rule Violation
+- **The Bug**: For employees with a gross salary over ₹30,000, income tax was calculated at a flat 10% instead of the mandated 20% bracket.
+- **The Fix**: We updated the constant multiplier in the `payroll_service.py` calculation engine.
+  ```python
+  # Before
+  if gross_salary > 30000:
+      income_tax = gross_salary * 0.10
+      
+  # After
+  if gross_salary > 30000:
+      income_tax = gross_salary * 0.20
+  ```
 
 ---
 
