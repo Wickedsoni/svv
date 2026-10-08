@@ -156,10 +156,10 @@ We executed **73 total Test Cases** during our cycle. We intentionally seeded th
 
 ### 🛠️ How We Resolved The Defects
 
-During our defect lifecycle, we fixed all identified bugs. Here is exactly how we resolved some of the major logical failures:
+During our defect lifecycle, we meticulously fixed all identified bugs. Here is exactly how we resolved our top 10 major logical failures:
 
 #### 1. BUG-001: Boundary Value Analysis Failure
-- **The Bug**: The system incorrectly allowed a Basic Salary of exactly ₹500,000, violating the rule that it must be strictly less than 500,000.
+- **The Bug**: The system incorrectly allowed a Basic Salary of exactly ₹500,000, violating the strictly less than rule.
 - **The Fix**: We updated the comparison operator in the validation route from `>=` to `>`.
   ```python
   # Before
@@ -170,7 +170,7 @@ During our defect lifecycle, we fixed all identified bugs. Here is exactly how w
   ```
 
 #### 2. BUG-002: Cause-Effect Validation Bypass
-- **The Bug**: The system bypassed the critical validation check (`Present Days > Working Days`) if the user inputted `0` for `Leave Days`.
+- **The Bug**: The system bypassed the critical validation check (`Present Days > Working Days`) if the user inputted `0` for Leave Days.
 - **The Fix**: We decoupled the validation so it runs regardless of the leave days input.
   ```python
   # Before
@@ -182,9 +182,31 @@ During our defect lifecycle, we fixed all identified bugs. Here is exactly how w
       raise ValueError("Present days cannot exceed working days.")
   ```
 
-#### 3. BUG-005: Decision Table Tax Rule Violation
+#### 3. BUG-003: Decision Table Gross Salary Miscalculation
+- **The Bug**: The system was omitting the employee's conveyance allowance from the Gross Salary total.
+- **The Fix**: We added `conveyance` to the `sum()` formula in `payroll_service.py`.
+  ```python
+  # Before
+  gross = basic + hra + special_allowance
+  
+  # After
+  gross = basic + hra + conveyance + special_allowance
+  ```
+
+#### 4. BUG-004: State Transition Date Checking Error
+- **The Bug**: The application blocked generating payrolls for the same month across different years (e.g., Nov 2025 collided with Nov 2026).
+- **The Fix**: We added year validation into the duplicate check query.
+  ```python
+  # Before
+  duplicate = Payroll.query.filter_by(month=current_month).first()
+  
+  # After
+  duplicate = Payroll.query.filter_by(month=current_month, year=current_year).first()
+  ```
+
+#### 5. BUG-005: Decision Table Tax Rule Violation
 - **The Bug**: For employees with a gross salary over ₹30,000, income tax was calculated at a flat 10% instead of the mandated 20% bracket.
-- **The Fix**: We updated the constant multiplier in the `payroll_service.py` calculation engine.
+- **The Fix**: We updated the constant multiplier in the calculation engine.
   ```python
   # Before
   if gross_salary > 30000:
@@ -195,7 +217,47 @@ During our defect lifecycle, we fixed all identified bugs. Here is exactly how w
       income_tax = gross_salary * 0.20
   ```
 
-#### 4. BUG-009: Unauthorized Access Bypass
+#### 6. BUG-006: ECP Numeric Type Leak
+- **The Bug**: The Employee form accepted numeric characters in the first and last name fields, breaking database hygiene.
+- **The Fix**: We added a Regex match in the route controller.
+  ```python
+  # Before
+  if not first_name:
+      flash("Name is required")
+      
+  # After
+  if not first_name.isalpha():
+      flash("Name must contain only alphabets")
+  ```
+
+#### 7. BUG-007: ZeroDivisionError Crash
+- **The Bug**: If Working Days were submitted as `0`, the attendance calculation raised an unhandled `ZeroDivisionError`.
+- **The Fix**: We enforced a minimum of 1 working day in the form payload check.
+  ```python
+  # Before
+  attendance_percentage = (present / working_days) * 100
+  
+  # After
+  if working_days <= 0:
+      raise ValueError("Working days must be greater than zero.")
+  attendance_percentage = (present / working_days) * 100
+  ```
+
+#### 8. BUG-008: Hardcoded Professional Tax
+- **The Bug**: Professional tax calculation always returned 0 regardless of salary bracket.
+- **The Fix**: We replaced the hardcoded `0` with the actual bracket calculation dictionary.
+  ```python
+  # Before
+  def calculate_prof_tax(salary):
+      return 0
+      
+  # After
+  def calculate_prof_tax(salary):
+      if salary > 20000: return 200
+      return 150
+  ```
+
+#### 9. BUG-009: Unauthorized Access Bypass
 - **The Bug**: Users could bypass the login screen and directly access `http://127.0.0.1:5000/payroll` by typing the URL.
 - **The Fix**: We added the Flask `@login_required` decorator to the Payroll controller routes.
   ```python
@@ -209,6 +271,17 @@ During our defect lifecycle, we fixed all identified bugs. Here is exactly how w
   @login_required
   def view_payroll():
       return render_template('payroll/index.html')
+  ```
+
+#### 10. BUG-010: UI Typo in Analytics Panel
+- **The Bug**: The main dashboard header incorrectly displayed "Analitics Overview".
+- **The Fix**: We corrected the typo in the Jinja2 template (`dashboard.html`).
+  ```html
+  <!-- Before -->
+  <h2 class="panel-title">Analitics Overview</h2>
+  
+  <!-- After -->
+  <h2 class="panel-title">Analytics Overview</h2>
   ```
 
 ---
