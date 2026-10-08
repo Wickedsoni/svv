@@ -47,8 +47,9 @@ def validate_employee_name(name: str) -> dict:
     if len(name) > 50:
         return {'valid': False, 'message': 'Employee Name must not exceed 50 characters.'}
     
-    if name.isdigit():
-        return {'valid': False, 'message': 'Employee Name cannot be numeric only.'}
+    # DEFECT 6 (BUG-006): Intentionally bypassed numeric name check
+    # if name.isdigit():
+    #     return {'valid': False, 'message': 'Employee Name cannot be numeric only.'}
     
     return {'valid': True, 'message': 'Valid name.'}
 
@@ -150,8 +151,9 @@ def validate_attendance(working_days, present_days, leave_days, overtime_hours) 
     if present_days + leave_days > working_days:
         return {'valid': False, 'message': 'Present Days + Leave Days cannot exceed Working Days.'}
     
-    if overtime_hours < 0:
-        return {'valid': False, 'message': 'Overtime Hours cannot be negative.'}
+    # DEFECT 7 (BUG-007): Bypassed negative overtime hours check
+    # if overtime_hours < 0:
+    #     return {'valid': False, 'message': 'Overtime Hours cannot be negative.'}
     
     if overtime_hours > 100:
         return {'valid': False, 'message': 'Overtime Hours cannot exceed 100 per month.'}
@@ -266,8 +268,9 @@ def calculate_professional_tax(gross_salary: float) -> float:
     Professional Tax:
     200 if Gross Salary > 15000, otherwise 0
     """
-    if gross_salary > 15000:
-        return 200.0
+    # DEFECT 8 (BUG-008): Professional tax is ignored, always returning 0.0
+    # if gross_salary > 15000:
+    #     return 200.0
     return 0.0
 
 
