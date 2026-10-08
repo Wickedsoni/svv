@@ -1,55 +1,110 @@
 {% extends 'base.html' %}
 {% block title %}Login{% endblock %}
 {% block content %}
-<div class="row justify-content-center align-items-center" style="min-height:100vh; margin-top:-20px;">
-    <div class="col-md-5 col-lg-4">
-        <div class="card shadow-lg border-0 rounded-4">
-            <div class="card-header bg-primary text-white text-center py-4 rounded-top-4">
-                <i class="fas fa-money-check-alt fa-3x mb-2"></i>
-                <h4 class="mb-0 fw-bold">Payroll Management System</h4>
-                <small class="opacity-75">Team 11 — Academic Demo</small>
-            </div>
-            <div class="card-body p-4">
-                <h5 class="text-center text-muted mb-4">Please Sign In</h5>
-                
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }} py-2" role="alert" id="login-flash">
-                                <i class="fas fa-exclamation-triangle me-1"></i> {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                
-                <form method="POST" action="{{ url_for('auth.login') }}" id="login-form">
-                    <div class="mb-3">
-                        <label for="username" class="form-label fw-semibold">Username</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" class="form-control" id="username" name="username"
-                                   placeholder="Enter username" autocomplete="username"
-                                   value="{{ request.form.get('username', '') }}">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    .split-layout {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+        margin-top: -3rem; /* Offset base container padding */
+    }
+    .split-left {
+        flex: 1;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        position: relative;
+    }
+    .split-left h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        text-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .split-left p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        text-align: center;
+        max-width: 80%;
+    }
+    .split-right {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f8f9fa;
+    }
+    .login-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+</style>
+
+<div class="split-layout">
+    <div class="split-left">
+        <i class="fas fa-money-check-alt mb-4" style="font-size: 5rem;"></i>
+        <h1>Payroll System</h1>
+        <p>A comprehensive, automated solution for managing employees, attendance, and flawless salary execution.</p>
+        <div style="position: absolute; bottom: 30px; opacity: 0.7; font-size: 0.9rem;">
+            Developed by Team 11
+        </div>
+    </div>
+    
+    <div class="split-right">
+        <div class="login-container">
+            <h3 class="fw-bold mb-1">Welcome Back</h3>
+            <p class="text-muted mb-4">Please enter your credentials to continue.</p>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} py-2" role="alert" id="login-flash">
+                            <i class="fas fa-exclamation-triangle me-1"></i> {{ message }}
                         </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="{{ url_for('auth.login') }}" id="login-form">
+                <div class="mb-3">
+                    <label for="username" class="form-label fw-semibold">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
+                        <input type="text" class="form-control border-start-0 bg-light" id="username" name="username"
+                               placeholder="admin" autocomplete="username"
+                               value="{{ request.form.get('username', '') }}">
                     </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label fw-semibold">Password</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" class="form-control" id="password" name="password"
-                                   placeholder="Enter password" autocomplete="current-password">
-                        </div>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-muted"></i></span>
+                        <input type="password" class="form-control border-start-0 bg-light" id="password" name="password"
+                               placeholder="••••••••" autocomplete="current-password">
                     </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg" id="login-btn">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <div class="card-footer text-center text-muted py-3 bg-light rounded-bottom-4">
-                <small><strong>Demo Credentials:</strong> admin / admin123</small>
-            </div>
+                </div>
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill" id="login-btn" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border: none;">
+                        Login to Dashboard <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+                <div class="text-center text-muted small mt-4">
+                    Demo Credentials: <strong>admin</strong> / <strong>admin123</strong>
+                </div>
+            </form>
         </div>
     </div>
 </div>
