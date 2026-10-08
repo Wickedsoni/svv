@@ -23,19 +23,74 @@ This repository is an exhaustive demonstration of the Software Testing Lifecycle
 
 The System Under Test (SUT) is built using a modern, lightweight web architecture. Below is the interactive flow of how our layers communicate:
 
-<div align="center">
-  <img src="assets/architecture.svg" alt="Animated Architecture Diagram" width="800">
-</div>
+```mermaid
+graph TD
+    %% Architecture Nodes
+    subgraph Frontend ["🎨 View Layer: Glassmorphism UI"]
+        UI("HTML5 / CSS3 / Bootstrap 5 / Jinja2")
+    end
+    
+    subgraph Backend ["🧠 Controller & Service Layer: Flask"]
+        API("Web Routes (auth, dashboard, employees)")
+        SVC("Payroll Logic Services (Tax, Salary, DB)")
+    end
+    
+    subgraph Database ["💾 Data Layer: SQLite"]
+        DB[("Relational DB (SQLAlchemy ORM)")]
+    end
+
+    %% Flow connections
+    UI -->|"HTTP GET/POST (User Action)"| API
+    API -->|"Orchestrates Business Logic"| SVC
+    SVC -->|"SQLAlchemy ORM Queries (CRUD)"| DB
+    DB -->|"Returns Result Set / Confirms Write"| SVC
+    SVC -->|"Processes Logic & Tax Math"| API
+    API -->|"Renders State to Template"| UI
+```
 
 ---
 
 ## 🧪 2. Testing Techniques & Evidence Mapping
 
-We separated our testing artifacts into highly organized directories. Below is the interactive map showing which folders correspond to which testing techniques:
+We separated our testing artifacts into highly organized directories. Below is the detailed interactive map showing which folders correspond to which testing techniques:
 
-<div align="center">
-  <img src="assets/folders.svg" alt="Animated Testing Diagram" width="800">
-</div>
+```mermaid
+graph LR
+    Root(("🚀 Software Testing Lifecycle")) --> BB{"⬛ Black Box"}
+    Root --> WB{"🩻 White Box"}
+    Root --> IT{"🔗 Integration"}
+
+    %% Black Box Branch
+    BB --> BB1["BVA (Boundaries)"]
+    BB --> BB2["ECP (Partitions)"]
+    BB --> BB3["Cause-Effect & Decision Table"]
+    BB1 -.-> |"Playwright Screenshots"| F1("📂 evidence/black_box")
+    BB2 -.-> F1
+    BB3 -.-> |"Captured Intentional UI Bugs"| F2("📂 evidence/initial_failures")
+
+    %% White Box Branch
+    WB --> WB1["Statement Coverage (99%)"]
+    WB --> WB2["Branch Coverage"]
+    WB1 -.-> |"Pytest-Cov HTML Reports"| F3("📂 evidence/white_box")
+    WB2 -.-> F3
+
+    %% Integration Branch
+    IT --> IT1["End-to-End API Flow"]
+    IT --> IT2["DB Cascade Integrity"]
+    IT1 -.-> |"Pytest-HTML Visual Reports"| F4("📂 evidence/integration")
+    IT2 -.-> F4
+
+    %% Styles for attractiveness
+    style Root fill:#ff9a9e,stroke:#fff,stroke-width:2px,color:#fff
+    style BB fill:#2c3e50,stroke:#fff,stroke-width:2px,color:#fff
+    style WB fill:#bdc3c7,stroke:#fff,stroke-width:2px,color:#2c3e50
+    style IT fill:#16a085,stroke:#fff,stroke-width:2px,color:#fff
+    
+    style F1 fill:#f39c12,stroke:#fff,stroke-width:1px,color:#fff
+    style F2 fill:#e74c3c,stroke:#fff,stroke-width:1px,color:#fff
+    style F3 fill:#2980b9,stroke:#fff,stroke-width:1px,color:#fff
+    style F4 fill:#27ae60,stroke:#fff,stroke-width:1px,color:#fff
+```
 
 ---
 
