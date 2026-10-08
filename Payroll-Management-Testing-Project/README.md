@@ -97,19 +97,36 @@ graph LR
 ## 📖 3. Detailed Explanation of Techniques
 
 ### ⬛ A. Black-Box Testing
-*Testing functionality without peering into internal code structures. Driven by Playwright UI automation.*
-- **Equivalence Class Partitioning (ECP)**: Dividing data into valid/invalid partitions. We used this on Employee form fields (e.g., Names only accept alphabets).
-- **Boundary Value Analysis (BVA)**: Testing the extreme edges of ranges to catch off-by-one errors. We used this for Basic Salary bounds (`10,000` to `500,000`).
-- **Cause-Effect Graphing**: Mapping specific inputs to specific outcomes. Used for Attendance logic (e.g., rejecting submissions where `Present Days > Working Days`).
-- **Decision Table Testing**: Used for complex multi-condition rules, specifically our Income Tax brackets (10% vs 20%) and Professional Tax evaluations.
+*Testing functionality and UI behavior without peering into internal code structures. Driven by Playwright UI automation and manual execution.*
+
+<div align="center">
+  <img src="assets/bb_folder.svg" alt="Black Box Folder Mapping" width="600">
+</div>
+
+- **Equivalence Class Partitioning (ECP)**: Dividing data into valid/invalid partitions to ensure our forms reject malicious or incorrectly typed data. We used this on Employee form fields (e.g., verifying Names only accept alphabets, and Emails require the `@` symbol).
+- **Boundary Value Analysis (BVA)**: Testing the extreme edges of ranges to catch off-by-one errors. We heavily utilized this for Basic Salary bounds (mandated to be strictly between `10,000` and `500,000`). We caught a critical defect by testing exactly `500,000`.
+- **Cause-Effect Graphing**: Mapping specific inputs to specific conditional outcomes. Used for our Attendance logic (e.g., automatically rejecting submissions where `Present Days > Working Days`).
+- **Decision Table Testing**: Used for complex multi-condition business rules, specifically our Income Tax brackets (10% vs 20% calculations) and Professional Tax evaluations across different salary bands.
 
 ### 🩻 B. White-Box Testing
-*Testing the internal code structures and logic paths. Driven by Pytest and Pytest-Cov.*
-- **Statement & Branch Coverage**: We wrote automated unit tests targeting `app/services/payroll_service.py` to ensure every mathematical operation, IF statement, and edge case is executed by a test. **(Achieved 99% Code Coverage)**.
+*Testing the internal code structures, logic paths, and mathematical algorithms. Driven by Pytest and Pytest-Cov.*
+
+<div align="center">
+  <img src="assets/wb_folder.svg" alt="White Box Folder Mapping" width="600">
+</div>
+
+- **Statement Coverage**: We wrote automated unit tests targeting the `app/services/payroll_service.py` to ensure every single mathematical operation, tax bracket evaluation, and variable assignment is executed by a test at least once. **(Achieved 99% Code Coverage)**.
+- **Branch Coverage**: We validated every `if/else` condition in the backend controllers to ensure that both the True and False evaluation paths of our business rules were actively verified.
 
 ### 🔗 C. Integration Testing
-*Testing communication between components. Driven by Pytest end-to-end endpoints.*
-- Verified that submitting an employee via the UI Route successfully inserts data into the SQLite Database, and successfully triggers the automated Salary configuration Service in cascade.
+*Testing communication between connected systems and modules. Driven by Pytest end-to-end endpoints.*
+
+<div align="center">
+  <img src="assets/it_folder.svg" alt="Integration Folder Mapping" width="600">
+</div>
+
+- **End-to-End API Flow**: Verified that submitting a form on the UI Route successfully triggers the correct Flask controller, which in turn orchestrates the Salary Service.
+- **Database Cascades (DB Integrity)**: Ensured that when data is inserted via the application layer, it accurately reflects in the SQLite Database, and that related foreign-key fields (like linking Attendance to the correct Employee ID) maintain perfect referential integrity.
 
 ---
 
@@ -117,24 +134,23 @@ graph LR
 
 We executed **73 total Test Cases** during our cycle. We intentionally seeded the app with defects, captured them in `evidence/initial_failures`, fixed them, and re-tested them.
 
-### Comprehensive Test Case Matrix
+### Comprehensive Test Case Matrix (Top 11 Defects)
 
 <div align="center">
 
 | Test ID | Module | Technique | Test Scenario | Status | Defect Found |
 |:-------:|:-------|:----------|:--------------|:------:|:-------------|
-| **TC-001** | Authentication | Positive | Login with valid credentials | ✅ Pass | - |
-| **TC-002** | Authentication | BVA (Empty) | Login with empty fields | ✅ Pass | - |
-| **TC-010** | Employee | ECP (Valid) | Add employee with valid inputs | ❌ Fail | **BUG-011** (Flash Message Color) |
-| **TC-011** | Employee | BVA (Min Limit) | Basic Salary = ₹10,000 | ✅ Pass | - |
-| **TC-012** | Employee | BVA (Max Limit) | Basic Salary = ₹500,000 | ❌ Fail | **BUG-001** (Accepted invalid boundary) |
-| **TC-020** | Attendance | BVA | Present Days = Working Days | ✅ Pass | - |
-| **TC-021** | Attendance | Cause-Effect | Present Days > Working Days | ❌ Fail | **BUG-002** (Bypassed logic) |
-| **TC-030** | Payroll | Decision Table | Calculate Gross Salary | ❌ Fail | **BUG-003** (Conveyance omitted) |
+| **TC-010** | Employee | ECP | Add employee with numeric name | ❌ Fail | **BUG-006** (Accepted numeric characters) |
+| **TC-011** | Employee | ECP | Submit form with valid data | ❌ Fail | **BUG-011** (Flash Message Color) |
+| **TC-012** | Employee | BVA (Max) | Basic Salary = ₹500,000 | ❌ Fail | **BUG-001** (Accepted invalid boundary) |
+| **TC-020** | Attendance | BVA (Zero)| Working Days = 0 | ❌ Fail | **BUG-007** (Caused ZeroDivisionError) |
+| **TC-021** | Attendance | Cause-Effect | Present Days > Working Days | ❌ Fail | **BUG-002** (Bypassed logic via 0 leave) |
+| **TC-030** | Payroll | Decision Table | Calculate Gross Salary | ❌ Fail | **BUG-003** (Conveyance omitted from gross) |
 | **TC-031** | Payroll | Decision Table | Tax Calc for Salary > 30k | ❌ Fail | **BUG-005** (Calculated at 10% not 20%) |
-| **TC-032** | Payroll | Decision Table | Calculate Professional Tax | ❌ Fail | **BUG-008** (Always returned 0) |
-| **TC-034** | Payroll | State Transition | Generate Payroll same month, diff year | ❌ Fail | **BUG-004** (Falsely flagged duplicate) |
-| **TC-040** | Dashboard | UI/UX | Verify Analytics Panel Title | ❌ Fail | **BUG-010** (Typo injected) |
+| **TC-032** | Payroll | Decision Table | Calculate Professional Tax | ❌ Fail | **BUG-008** (Hardcoded to return 0) |
+| **TC-034** | Payroll | State Transition | Payroll same month, diff year | ❌ Fail | **BUG-004** (Falsely flagged as duplicate) |
+| **TC-040** | Dashboard | UI/UX | Verify Analytics Panel Title | ❌ Fail | **BUG-010** (Typo injected in UI HTML) |
+| **TC-050** | Auth | State Transition | Access /payroll without login | ❌ Fail | **BUG-009** (Unauthorized Access bypass) |
 
 </div>
 
@@ -177,6 +193,22 @@ During our defect lifecycle, we fixed all identified bugs. Here is exactly how w
   # After
   if gross_salary > 30000:
       income_tax = gross_salary * 0.20
+  ```
+
+#### 4. BUG-009: Unauthorized Access Bypass
+- **The Bug**: Users could bypass the login screen and directly access `http://127.0.0.1:5000/payroll` by typing the URL.
+- **The Fix**: We added the Flask `@login_required` decorator to the Payroll controller routes.
+  ```python
+  # Before
+  @bp.route('/payroll')
+  def view_payroll():
+      return render_template('payroll/index.html')
+      
+  # After
+  @bp.route('/payroll')
+  @login_required
+  def view_payroll():
+      return render_template('payroll/index.html')
   ```
 
 ---
