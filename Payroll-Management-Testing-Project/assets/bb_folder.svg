@@ -1,0 +1,23 @@
+<svg width="600" height="150" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes dash { to { stroke-dashoffset: -20; } }
+    .box { fill: #2c3e50; rx: 8; ry: 8; }
+    .folder { fill: #f39c12; rx: 8; ry: 8; }
+    .text { fill: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 14px; font-weight: bold; text-anchor: middle; }
+    .desc { fill: #ecf0f1; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 11px; text-anchor: middle; }
+    .line { stroke: #bdc3c7; stroke-width: 3px; stroke-dasharray: 6,6; fill: none; animation: dash 1s linear infinite; }
+  </style>
+  
+  <rect x="50" y="50" width="150" height="50" class="box" />
+  <text x="125" y="75" class="text">⬛ Black Box</text>
+  <text x="125" y="92" class="desc">(UI &amp; Functional)</text>
+  
+  <path d="M 200 75 L 300 45" class="line" />
+  <path d="M 200 75 L 300 105" class="line" />
+  
+  <rect x="300" y="25" width="250" height="40" class="folder" />
+  <text x="425" y="50" class="text">📂 evidence/black_box</text>
+  
+  <rect x="300" y="85" width="250" height="40" class="folder" />
+  <text x="425" y="110" class="text">📂 evidence/initial_failures</text>
+</svg>
