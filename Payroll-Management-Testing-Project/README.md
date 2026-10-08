@@ -26,31 +26,26 @@ The System Under Test (SUT) is built using a modern, lightweight web architectur
 ```mermaid
 graph TD
     %% Architecture Nodes
-    subgraph Frontend [🎨 View Layer: Glassmorphism UI]
-        UI(HTML5 / CSS3 / Jinja2)
+    subgraph Frontend ["🎨 View Layer: Glassmorphism UI"]
+        UI("HTML5 / CSS3 / Jinja2")
     end
     
-    subgraph Backend [🧠 Controller & Service Layer: Flask]
-        API(Web Routes)
-        SVC(Payroll Logic Services)
+    subgraph Backend ["🧠 Controller & Service Layer: Flask"]
+        API("Web Routes")
+        SVC("Payroll Logic Services")
     end
     
-    subgraph Database [💾 Data Layer: SQLite]
-        DB[(Relational DB)]
+    subgraph Database ["💾 Data Layer: SQLite"]
+        DB[("Relational DB")]
     end
 
     %% Flow connections
-    UI -->|HTTP GET/POST| API
-    API -->|Orchestrates| SVC
-    SVC -->|SQLAlchemy ORM Queries| DB
-    DB -->|Returns Result Set| SVC
-    SVC -->|Processes Logic & Tax| API
-    API -->|Renders State| UI
-
-    %% Styling
-    style Frontend fill:#1e3c72,stroke:#ffffff,stroke-width:2px,color:#ffffff
-    style Backend fill:#2a5298,stroke:#ffffff,stroke-width:2px,color:#ffffff
-    style Database fill:#003B57,stroke:#ffffff,stroke-width:2px,color:#ffffff
+    UI -->|"HTTP GET/POST"| API
+    API -->|"Orchestrates"| SVC
+    SVC -->|"SQLAlchemy ORM Queries"| DB
+    DB -->|"Returns Result Set"| SVC
+    SVC -->|"Processes Logic & Tax"| API
+    API -->|"Renders State"| UI
 ```
 
 ---
@@ -61,26 +56,26 @@ We separated our testing artifacts into highly organized directories. Below is t
 
 ```mermaid
 graph LR
-    Root((🚀 Software Testing)) --> BB{⬛ Black Box}
-    Root --> WB{🩻 White Box}
-    Root --> IT{🔗 Integration}
+    Root(("🚀 Software Testing")) --> BB{"⬛ Black Box"}
+    Root --> WB{"🩻 White Box"}
+    Root --> IT{"🔗 Integration"}
 
     %% Black Box Branch
-    BB --> BB1[BVA & ECP]
-    BB --> BB2[Cause-Effect & Decision Table]
-    BB1 -.-> |Screenshots| F1(📂 evidence/black_box)
-    BB2 -.-> |Defect Captures| F2(📂 evidence/initial_failures)
+    BB --> BB1["BVA & ECP"]
+    BB --> BB2["Cause-Effect & Decision Table"]
+    BB1 -.-> |"Screenshots"| F1("📂 evidence/black_box")
+    BB2 -.-> |"Defect Captures"| F2("📂 evidence/initial_failures")
 
     %% White Box Branch
-    WB --> WB1[Statement Coverage]
-    WB --> WB2[Branch Coverage]
-    WB1 -.-> |Pytest HTML| F3(📂 evidence/white_box)
+    WB --> WB1["Statement Coverage"]
+    WB --> WB2["Branch Coverage"]
+    WB1 -.-> |"Pytest HTML"| F3("📂 evidence/white_box")
     WB2 -.-> F3
 
     %% Integration Branch
-    IT --> IT1[End-to-End Flow]
-    IT --> IT2[DB Cascades]
-    IT1 -.-> |Pytest-HTML Reports| F4(📂 evidence/integration)
+    IT --> IT1["End-to-End Flow"]
+    IT --> IT2["DB Cascades"]
+    IT1 -.-> |"Pytest-HTML Reports"| F4("📂 evidence/integration")
     IT2 -.-> F4
 
     %% Styles for attractiveness
